@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ur" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>جمعہ میر جنرل اسٹور | Jumma Mir General Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1a5c38;
+    --green-light: #2d8a56;
+    --green-pale: #e8f5ee;
+    --gold: #c8951a;
+    --gold-light: #f0b429;
+    --cream: #faf8f3;
+    --dark: #1a1a1a;
+    --text: #2c2c2c;
+    --muted: #6b7280;
+    --border: #e0ddd5;
+    --white: #ffffff;
+    --red: #dc2626;
+    --shadow: 0 2px 12px rgba(26,92,56,0.10);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Outfit', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  header {
+    background: var(--green);
+    padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo { display: flex; align-items: center; gap: 12px; }
+  .logo-icon { width: 40px; height: 40px; background: var(--gold); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .logo-text { color: white; }
+  .logo-text .urdu { font-family: 'Noto Nastaliq Urdu', serif; font-size: 15px; line-height: 1.2; direction: rtl; }
+  .logo-text .english { font-size: 11px; opacity: 0.75; letter-spacing: 0.5px; }
+  .header-nav { display: flex; align-items: center; gap: 12px; }
+  .btn { padding: 8px 18px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500; transition: all 0.2s; }
+  .btn-outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.5); color: white; }
+  .btn-outline:hover { background: rgba(255,255,255,0.1); border-color: white; }
+  .btn-gold { background: var(--gold); color: white; }
+  .btn-gold:hover { background: var(--gold-light); }
+  .btn-green { background: var(--green); color: white; }
+  .btn-green:hover { background: var(--green-light); }
+  .btn-danger { background: var(--red); color: white; }
+
+  /* HERO BANNER */
+  .hero {
+    background: linear-gradient(135deg, var(--green) 0%, var(--green-light) 60%, #3da86b 100%);
+    padding: 40px 24px;
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '🌿';
+    position: absolute; font-size: 120px; opacity: 0.06; top: -20px; right: -20px;
+  }
+  .hero-urdu { font-family: 'Noto Nastaliq Urdu', serif; font-size: 24px; direction: rtl; margin-bottom: 8px; }
+  .hero-en { font-size: 14px; opacity: 0.85; margin-bottom: 4px; }
+  .hero-tagline { font-size: 12px; opacity: 0.65; }
+
+  /* MAIN LAYOUT */
+  .container { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
+
+  /* AUTH SECTION */
+  #auth-section {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+    max-width: 420px;
+    margin: 0 auto 24px;
+    border: 1px solid var(--border);
+  }
+  .section-title { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+  .section-urdu { font-family: 'Noto Nastaliq Urdu', serif; font-size: 15px; direction: rtl; color: var(--muted); margin-bottom: 16px; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 5px; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+    font-family: 'Outfit', sans-serif; font-size: 14px; color: var(--text);
+    background: var(--cream); transition: border 0.2s;
+    outline: none;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--green); background: white; }
+  .btn-block { width: 100%; padding: 12px; font-size: 14px; border-radius: 10px; }
+  .auth-switch { text-align: center; margin-top: 12px; font-size: 13px; color: var(--muted); }
+  .auth-switch a { color: var(--green); text-decoration: none; font-weight: 500; cursor: pointer; }
+  .user-badge { display: flex; align-items: center; gap: 10px; padding: 10px 16px; background: var(--green-pale); border-radius: 10px; margin-bottom: 20px; }
+  .user-avatar { width: 36px; height: 36px; background: var(--green); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
+  .user-info .name { font-size: 14px; font-weight: 500; }
+  .user-info .email { font-size: 12px; color: var(--muted); }
+
+  /* STORE SECTION */
+  #store-section { display: none; }
+  .store-grid { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
+
+  /* ITEMS */
+  .items-panel { background: white; border-radius: 16px; padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+  .panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .panel-title { font-size: 15px; font-weight: 600; }
+  .panel-urdu { font-family: 'Noto Nastaliq Urdu', serif; font-size: 13px; direction: rtl; color: var(--muted); }
+  .item-card {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border);
+    margin-bottom: 10px; transition: border 0.2s; background: var(--cream);
+  }
+  .item-card:hover { border-color: var(--green-light); background: white; }
+  .item-info .item-name { font-size: 14px; font-weight: 500; }
+  .item-info .item-name-urdu { font-family: 'Noto Nastaliq Urdu', serif; font-size: 13px; direction: rtl; color: var(--muted); }
+  .item-info .item-price { font-size: 13px; color: var(--green); font-weight: 600; margin-top: 2px; }
+  .item-info .item-stock { font-size: 11px; color: var(--muted); }
+  .qty-control { display: flex; align-items: center; gap: 8px; }
+  .qty-btn { width: 28px; height: 28px; border-radius: 6px; border: 1.5px solid var(--border); background: white; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; color: var(--green); font-weight: 600; transition: all 0.15s; }
+  .qty-btn:hover { background: var(--green); color: white; border-color: var(--green); }
+  .qty-display { font-size: 14px; font-weight: 600; min-width: 24px; text-align: center; }
+  .stock-out { opacity: 0.45; pointer-events: none; }
+  .badge { font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+  .badge-green { background: var(--green-pale); color: var(--green); }
+  .badge-red { background: #fee2e2; color: var(--red); }
+  .badge-gold { background: #fef3c7; color: #92400e; }
+  .loading-items { text-align: center; padding: 40px; color: var(--muted); }
+
+  /* ORDER PANEL */
+  .order-panel { position: sticky; top: 80px; }
+  .order-box { background: white; border-radius: 16px; padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 16px; }
+  .order-items-list { max-height: 180px; overflow-y: auto; margin: 12px 0; }
+  .order-line { display: flex; justify-content: space-between; font-size: 13px; padding: 5px 0; border-bottom: 1px dashed var(--border); }
+  .order-line:last-child { border-bottom: none; }
+  .order-total { display: flex; justify-content: space-between; font-size: 15px; font-weight: 700; color: var(--green); margin-top: 10px; padding-top: 10px; border-top: 2px solid var(--border); }
+  .empty-cart { text-align: center; padding: 20px; color: var(--muted); font-size: 13px; }
+  .upload-zone {
+    border: 2px dashed var(--border); border-radius: 10px; padding: 20px; text-align: center;
+    cursor: pointer; transition: all 0.2s; background: var(--cream);
+  }
+  .upload-zone:hover, .upload-zone.drag-over { border-color: var(--green); background: var(--green-pale); }
+  .upload-zone .up-icon { font-size: 28px; margin-bottom: 6px; }
+  .upload-zone .up-text { font-size: 12px; color: var(--muted); }
+  .upload-zone .up-text-urdu { font-family: 'Noto Nastaliq Urdu', serif; font-size: 12px; direction: rtl; color: var(--muted); }
+  #payment-preview { max-width: 100%; border-radius: 8px; margin-top: 10px; display: none; }
+  .msg-box { margin-top: 10px; }
+  .msg-box textarea { height: 80px; resize: none; }
+
+  /* STATUS */
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--dark); color: white; padding: 12px 20px; border-radius: 10px; font-size: 13px; z-index: 999; opacity: 0; transform: translateY(10px); transition: all 0.3s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.success { background: var(--green); }
+  .toast.error { background: var(--red); }
+
+  /* MY ORDERS */
+  .orders-section { background: white; border-radius: 16px; padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-top: 20px; }
+  .order-row { padding: 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 10px; font-size: 13px; }
+  .order-row-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .order-status-pending { background: #fef3c7; color: #92400e; }
+  .order-status-approved { background: var(--green-pale); color: var(--green); }
+  .order-status-rejected { background: #fee2e2; color: var(--red); }
+
+  /* DIVIDER */
+  .divider { text-align: center; margin: 10px 0; font-size: 11px; color: var(--muted); position: relative; }
+  .divider::before, .divider::after { content: ''; position: absolute; top: 50%; width: 40%; height: 1px; background: var(--border); }
+  .divider::before { left: 0; }
+  .divider::after { right: 0; }
+
+  /* RESPONSIVE */
+  @media (max-width: 680px) {
+    .store-grid { grid-template-columns: 1fr; }
+    .order-panel { position: static; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">🏪</div>
+    <div class="logo-text">
+      <div class="urdu">جمعہ میر جنرل اسٹور</div>
+      <div class="english">Jumma Mir General Store</div>
+    </div>
+  </div>
+  <div class="header-nav">
+    <div id="header-user" style="display:none; align-items:center; gap:10px;">
+      <span id="header-email" style="font-size:12px; color:rgba(255,255,255,0.8);"></span>
+      <button class="btn btn-outline" onclick="logout()">Logout</button>
+    </div>
+    <a href="admin.html">
+      <button class="btn btn-gold">Admin Panel 🔐</button>
+    </a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-urdu">خوش آمدید — آرڈر دیں</div>
+  <div class="hero-en">Welcome — Browse items & place your order</div>
+  <div class="hero-tagline">Upload payment proof • Admin will confirm your order</div>
+</div>
+
+<div class="container">
+
+  <!-- AUTH SECTION -->
+  <div id="auth-section">
+    <div id="login-form">
+      <div class="section-title">Login / لاگ ان</div>
+      <div class="section-urdu">اپنی ای میل سے اکاؤنٹ میں داخل ہوں</div>
+      <div class="form-group">
+        <label>Email / ای میل</label>
+        <input type="email" id="login-email" placeholder="you@email.com">
+      </div>
+      <div class="form-group">
+        <label>Password / پاسورڈ</label>
+        <input type="password" id="login-pass" placeholder="••••••••">
+      </div>
+      <button class="btn btn-green btn-block" onclick="loginUser()">Login / داخل ہوں</button>
+      <div class="auth-switch">
+        نیا اکاؤنٹ؟ <a onclick="showRegister()">Register here / رجسٹر کریں</a>
+      </div>
+    </div>
+    <div id="register-form" style="display:none;">
+      <div class="section-title">Register / رجسٹر</div>
+      <div class="section-urdu">نیا اکاؤنٹ بنائیں</div>
+      <div class="form-group">
+        <label>Full Name / پورا نام</label>
+        <input type="text" id="reg-name" placeholder="Ahmad Ali">
+      </div>
+      <div class="form-group">
+        <label>Email / ای میل</label>
+        <input type="email" id="reg-email" placeholder="you@email.com">
+      </div>
+      <div class="form-group">
+        <label>Password / پاسورڈ</label>
+        <input type="password" id="reg-pass" placeholder="Min 6 characters">
+      </div>
+      <button class="btn btn-green btn-block" onclick="registerUser()">Create Account / اکاؤنٹ بنائیں</button>
+      <div class="auth-switch">
+        پہلے سے اکاؤنٹ ہے؟ <a onclick="showLogin()">Login here / لاگ ان کریں</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- STORE SECTION -->
+  <div id="store-section">
+    <div class="user-badge">
+      <div class="user-avatar" id="user-initial">A</div>
+      <div class="user-info">
+        <div class="name" id="user-name-display">User</div>
+        <div class="email" id="user-email-display">email</div>
+      </div>
+      <span class="badge badge-green" style="margin-left:auto;">خریدار / Buyer</span>
+    </div>
+
+    <div class="store-grid">
+      <!-- ITEMS LIST -->
+      <div class="items-panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Available Items / دستیاب اشیاء</div>
+            <div class="panel-urdu">آئٹم منتخب کریں اور مقدار ڈالیں</div>
+          </div>
+        </div>
+        <div id="items-list">
+          <div class="loading-items">⏳ Loading items...</div>
+        </div>
+      </div>
+
+      <!-- ORDER PANEL -->
+      <div class="order-panel">
+        <div class="order-box">
+          <div class="panel-title">Your Order / آپ کا آرڈر</div>
+          <div class="order-items-list" id="order-summary">
+            <div class="empty-cart">🛒 No items selected<br><span style="font-family:'Noto Nastaliq Urdu';direction:rtl;">کوئی آئٹم نہیں</span></div>
+          </div>
+          <div class="order-total">
+            <span>Total / کل</span>
+            <span id="order-total">Rs 0</span>
+          </div>
+        </div>
+
+        <div class="order-box">
+          <div class="panel-title" style="margin-bottom:10px;">Payment Proof / ادائیگی ثبوت</div>
+          <div class="upload-zone" onclick="document.getElementById('payment-file').click()" id="upload-zone">
+            <div class="up-icon">📤</div>
+            <div class="up-text">Click to upload receipt / photo / PDF</div>
+            <div class="up-text-urdu">بینک ریسیپٹ یا اسکرین شاٹ اپلوڈ کریں</div>
+          </div>
+          <input type="file" id="payment-file" accept="image/*,application/pdf" style="display:none" onchange="handlePaymentUpload(event)">
+          <img id="payment-preview" alt="Payment proof preview">
+          <div id="pdf-name" style="display:none; font-size:12px; color:var(--green); margin-top:8px; padding:8px; background:var(--green-pale); border-radius:6px;"></div>
+
+          <div class="msg-box form-group" style="margin-top:14px;">
+            <label>Message to shopkeeper / دکاندار کو پیغام</label>
+            <textarea id="order-message" placeholder="e.g. Please deliver by evening / شام تک ڈیلیوری کریں"></textarea>
+          </div>
+
+          <button class="btn btn-green btn-block" onclick="submitOrder()">
+            Submit Order / آرڈر بھیجیں ✓
+          </button>
+        </div>
+
+        <div class="orders-section">
+          <div class="panel-title">My Orders / میرے آرڈر</div>
+          <div class="panel-urdu" style="margin-bottom:12px;">آرڈر کی حیثیت</div>
+          <div id="my-orders-list">
+            <div class="loading-items">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+
+const db = firebase.database();
+const auth = firebase.auth();
+const storage = firebase.storage();
+
+let cart = {};
+let itemsData = {};
+let currentUser = null;
+
+// AUTH
+auth.onAuthStateChanged(user => {
+  if (user) {
+    currentUser = user;
+    document.getElementById('auth-section').style.display = 'none';
+    document.getElementById('store-section').style.display = 'block';
+    document.getElementById('header-user').style.display = 'flex';
+    document.getElementById('header-email').textContent = user.email;
+    const name = user.displayName || user.email.split('@')[0];
+    document.getElementById('user-name-display').textContent = name;
+    document.getElementById('user-email-display').textContent = user.email;
+    document.getElementById('user-initial').textContent = name[0].toUpperCase();
+    loadItems();
+    loadMyOrders();
+  } else {
+    currentUser = null;
+    document.getElementById('auth-section').style.display = 'block';
+    document.getElementById('store-section').style.display = 'none';
+    document.getElementById('header-user').style.display = 'none';
+  }
+});
+
+function showRegister() {
+  document.getElementById('login-form').style.display = 'none';
+  document.getElementById('register-form').style.display = 'block';
+}
+function showLogin() {
+  document.getElementById('register-form').style.display = 'none';
+  document.getElementById('login-form').style.display = 'block';
+}
+
+async function loginUser() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  if (!email || !pass) return showToast('Enter email and password', 'error');
+  try {
+    await auth.signInWithEmailAndPassword(email, pass);
+    showToast('Login successful! / لاگ ان کامیاب', 'success');
+  } catch(e) {
+    showToast(e.message, 'error');
+  }
+}
+
+async function registerUser() {
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pass = document.getElementById('reg-pass').value;
+  if (!name || !email || !pass) return showToast('Fill all fields', 'error');
+  if (pass.length < 6) return showToast('Password min 6 chars', 'error');
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    await cred.user.updateProfile({ displayName: name });
+    showToast('Account created! / اکاؤنٹ بن گیا', 'success');
+  } catch(e) {
+    showToast(e.message, 'error');
+  }
+}
+
+function logout() {
+  auth.signOut();
+  cart = {};
+  showToast('Logged out');
+}
+
+// ITEMS
+function loadItems() {
+  db.ref('items').on('value', snap => {
+    itemsData = snap.val() || {};
+    renderItems();
+  });
+}
+
+function renderItems() {
+  const list = document.getElementById('items-list');
+  const keys = Object.keys(itemsData);
+  if (!keys.length) {
+    list.innerHTML = '<div class="loading-items">No items added yet / ابھی کوئی آئٹم نہیں</div>';
+    return;
+  }
+  list.innerHTML = keys.map(id => {
+    const item = itemsData[id];
+    const qty = cart[id] ? cart[id].qty : 0;
+    const outOfStock = item.stock <= 0;
+    return `
+    <div class="item-card ${outOfStock ? 'stock-out' : ''}" id="card-${id}">
+      <div class="item-info">
+        <div class="item-name">${item.name}</div>
+        ${item.nameUrdu ? `<div class="item-name-urdu">${item.nameUrdu}</div>` : ''}
+        <div class="item-price">Rs ${item.price}</div>
+        <div class="item-stock">${outOfStock ? '❌ Out of stock' : `✅ ${item.stock} available`}</div>
+      </div>
+      <div class="qty-control">
+        <button class="qty-btn" onclick="updateQty('${id}', -1)">−</button>
+        <span class="qty-display" id="qty-${id}">${qty}</span>
+        <button class="qty-btn" onclick="updateQty('${id}', 1)">+</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateQty(id, delta) {
+  const item = itemsData[id];
+  if (!item) return;
+  const current = cart[id] ? cart[id].qty : 0;
+  let newQty = current + delta;
+  if (newQty < 0) newQty = 0;
+  if (newQty > item.stock) { showToast('Max stock reached / اتنا اسٹاک نہیں'); newQty = item.stock; }
+  if (newQty === 0) delete cart[id];
+  else cart[id] = { qty: newQty, name: item.name, price: item.price };
+  document.getElementById('qty-' + id).textContent = newQty;
+  renderOrderSummary();
+}
+
+function renderOrderSummary() {
+  const keys = Object.keys(cart);
+  const summary = document.getElementById('order-summary');
+  const totalEl = document.getElementById('order-total');
+  if (!keys.length) {
+    summary.innerHTML = '<div class="empty-cart">🛒 No items selected<br><span style="font-family:\'Noto Nastaliq Urdu\';direction:rtl;">کوئی آئٹم نہیں</span></div>';
+    totalEl.textContent = 'Rs 0';
+    return;
+  }
+  let total = 0;
+  summary.innerHTML = keys.map(id => {
+    const c = cart[id];
+    const sub = c.qty * c.price;
+    total += sub;
+    return `<div class="order-line"><span>${c.name} x${c.qty}</span><span>Rs ${sub}</span></div>`;
+  }).join('');
+  totalEl.textContent = 'Rs ' + total;
+}
+
+// PAYMENT UPLOAD
+let paymentFile = null;
+function handlePaymentUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  paymentFile = file;
+  if (file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const prev = document.getElementById('payment-preview');
+      prev.src = ev.target.result;
+      prev.style.display = 'block';
+      document.getElementById('pdf-name').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  } else if (file.type === 'application/pdf') {
+    document.getElementById('payment-preview').style.display = 'none';
+    const pdfEl = document.getElementById('pdf-name');
+    pdfEl.textContent = '📄 ' + file.name;
+    pdfEl.style.display = 'block';
+  }
+  document.getElementById('upload-zone').style.borderColor = 'var(--green)';
+  showToast('File selected / فائل منتخب', 'success');
+}
+
+// SUBMIT ORDER
+async function submitOrder() {
+  if (!currentUser) return showToast('Please login first', 'error');
+  const keys = Object.keys(cart);
+  if (!keys.length) return showToast('Add items first / پہلے آئٹم شامل کریں', 'error');
+  if (!paymentFile) return showToast('Upload payment proof / ادائیگی ثبوت اپلوڈ کریں', 'error');
+  const message = document.getElementById('order-message').value;
+
+  try {
+    showToast('Submitting... / جمع ہو رہا ہے');
+    const orderId = db.ref('orders').push().key;
+    const storageRef = storage.ref(`payments/${orderId}/${paymentFile.name}`);
+    await storageRef.put(paymentFile);
+    const paymentUrl = await storageRef.getDownloadURL();
+
+    let total = 0;
+    const items = {};
+    keys.forEach(id => {
+      total += cart[id].qty * cart[id].price;
+      items[id] = cart[id];
+    });
+
+    await db.ref('orders/' + orderId).set({
+      userId: currentUser.uid,
+      userEmail: currentUser.email,
+      userName: currentUser.displayName || currentUser.email,
+      items,
+      total,
+      message,
+      paymentUrl,
+      paymentFileName: paymentFile.name,
+      status: 'pending',
+      timestamp: Date.now()
+    });
+
+    showToast('Order submitted! / آرڈر بھیج دیا گیا ✓', 'success');
+    cart = {};
+    paymentFile = null;
+    document.getElementById('payment-preview').style.display = 'none';
+    document.getElementById('pdf-name').style.display = 'none';
+    document.getElementById('order-message').value = '';
+    document.getElementById('payment-file').value = '';
+    document.getElementById('upload-zone').style.borderColor = '';
+    renderItems();
+    renderOrderSummary();
+    loadMyOrders();
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+// MY ORDERS
+function loadMyOrders() {
+  if (!currentUser) return;
+  db.ref('orders').orderByChild('userId').equalTo(currentUser.uid).on('value', snap => {
+    const orders = snap.val() || {};
+    const list = document.getElementById('my-orders-list');
+    const keys = Object.keys(orders).reverse();
+    if (!keys.length) {
+      list.innerHTML = '<div style="font-size:13px;color:var(--muted);text-align:center;padding:16px;">No orders yet / ابھی کوئی آرڈر نہیں</div>';
+      return;
+    }
+    list.innerHTML = keys.map(id => {
+      const o = orders[id];
+      const d = new Date(o.timestamp).toLocaleDateString('en-PK');
+      const statusClass = o.status === 'approved' ? 'order-status-approved' : o.status === 'rejected' ? 'order-status-rejected' : 'order-status-pending';
+      const statusLabel = o.status === 'approved' ? '✅ Approved / منظور' : o.status === 'rejected' ? '❌ Rejected / مسترد' : '⏳ Pending / زیر غور';
+      return `<div class="order-row">
+        <div class="order-row-header">
+          <span style="font-weight:500;">Rs ${o.total}</span>
+          <span class="badge ${statusClass}">${statusLabel}</span>
+        </div>
+        <div style="color:var(--muted);">${d} • ${Object.keys(o.items).length} item(s)</div>
+        ${o.adminNote ? `<div style="margin-top:4px;font-size:12px;color:var(--green);">📝 ${o.adminNote}</div>` : ''}
+      </div>`;
+    }).join('');
+  });
+}
+
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+</script>
+</body>
+</html>

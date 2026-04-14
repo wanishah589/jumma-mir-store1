@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ur" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel | جمعہ میر جنرل اسٹور</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1a5c38; --green-light: #2d8a56; --green-pale: #e8f5ee;
+    --gold: #c8951a; --gold-light: #f0b429;
+    --cream: #faf8f3; --dark: #1a1a1a; --text: #2c2c2c;
+    --muted: #6b7280; --border: #e0ddd5; --white: #ffffff;
+    --red: #dc2626; --shadow: 0 2px 12px rgba(26,92,56,0.10);
+    --blue: #1e40af; --blue-pale: #eff6ff;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Outfit', sans-serif; background: #f0f0eb; color: var(--text); min-height: 100vh; }
+
+  header {
+    background: var(--dark); padding: 0 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px; position: sticky; top: 0; z-index: 100;
+  }
+  .logo-text { color: white; }
+  .logo-text .urdu { font-family: 'Noto Nastaliq Urdu', serif; font-size: 14px; direction: rtl; }
+  .logo-text .en { font-size: 11px; opacity: 0.6; }
+  .btn { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 500; transition: all 0.2s; }
+  .btn-red { background: var(--red); color: white; }
+  .btn-green { background: var(--green); color: white; }
+  .btn-green:hover { background: var(--green-light); }
+  .btn-gold { background: var(--gold); color: white; }
+  .btn-sm { padding: 5px 12px; font-size: 12px; border-radius: 6px; }
+  .btn-block { width: 100%; padding: 11px; border-radius: 10px; }
+
+  #admin-login {
+    max-width: 380px; margin: 60px auto; background: white;
+    border-radius: 16px; padding: 28px; box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+  }
+  .login-icon { font-size: 40px; text-align: center; margin-bottom: 12px; }
+  .login-title { font-size: 18px; font-weight: 600; text-align: center; margin-bottom: 4px; }
+  .login-urdu { font-family: 'Noto Nastaliq Urdu', serif; direction: rtl; font-size: 14px; color: var(--muted); text-align: center; margin-bottom: 20px; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 5px; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+    font-family: 'Outfit', sans-serif; font-size: 14px; color: var(--text);
+    background: var(--cream); outline: none; transition: border 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--green); background: white; }
+
+  #admin-panel { display: none; }
+  .admin-layout { display: grid; grid-template-columns: 260px 1fr; min-height: calc(100vh - 60px); }
+  .sidebar { background: white; border-right: 1px solid var(--border); padding: 20px 0; }
+  .sidebar-item {
+    padding: 12px 20px; font-size: 14px; cursor: pointer; display: flex; align-items: center;
+    gap: 10px; color: var(--text); border-left: 3px solid transparent; transition: all 0.2s;
+  }
+  .sidebar-item:hover { background: var(--cream); }
+  .sidebar-item.active { background: var(--green-pale); border-left-color: var(--green); color: var(--green); font-weight: 500; }
+  .sidebar-item .icon { font-size: 18px; }
+  .sidebar-item .urdu { font-family: 'Noto Nastaliq Urdu', serif; font-size: 12px; direction: rtl; color: var(--muted); }
+  .sidebar-stat { padding: 6px 20px 14px; font-size: 11px; color: var(--muted); }
+  .stat-num { font-size: 22px; font-weight: 700; color: var(--green); display: block; }
+
+  .main-content { padding: 24px; overflow-y: auto; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .page-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  .page-urdu { font-family: 'Noto Nastaliq Urdu', serif; direction: rtl; font-size: 14px; color: var(--muted); margin-bottom: 20px; }
+
+  .card { background: white; border-radius: 14px; padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 20px; }
+  .card-title { font-size: 15px; font-weight: 600; margin-bottom: 14px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* ITEMS TABLE */
+  .item-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 8px; background: var(--cream); }
+  .item-row:hover { background: white; }
+  .item-row-info .name { font-size: 14px; font-weight: 500; }
+  .item-row-info .name-urdu { font-family: 'Noto Nastaliq Urdu', serif; font-size: 12px; direction: rtl; color: var(--muted); }
+  .item-row-info .meta { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .item-actions { display: flex; gap: 6px; align-items: center; }
+  .badge { font-size: 10px; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+  .badge-green { background: var(--green-pale); color: var(--green); }
+  .badge-red { background: #fee2e2; color: var(--red); }
+  .badge-gold { background: #fef3c7; color: #92400e; }
+  .badge-pending { background: #fef3c7; color: #92400e; }
+  .badge-approved { background: var(--green-pale); color: var(--green); }
+  .badge-rejected { background: #fee2e2; color: var(--red); }
+
+  /* ORDERS */
+  .order-card { background: white; border-radius: 12px; padding: 16px; border: 1px solid var(--border); margin-bottom: 14px; }
+  .order-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .order-user { font-size: 14px; font-weight: 500; }
+  .order-email { font-size: 12px; color: var(--muted); }
+  .order-items-mini { font-size: 12px; color: var(--text); margin: 8px 0; background: var(--cream); border-radius: 8px; padding: 8px 12px; }
+  .order-footer { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .order-total-label { font-size: 15px; font-weight: 700; color: var(--green); }
+  .payment-thumb { max-width: 160px; max-height: 100px; border-radius: 8px; cursor: pointer; border: 1px solid var(--border); display: block; margin: 8px 0; }
+  .payment-link { font-size: 12px; color: var(--blue); text-decoration: none; }
+  .admin-note-input { width: 100%; padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 12px; font-family: 'Outfit',sans-serif; margin-top: 6px; }
+  .filter-bar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .filter-btn { padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border); background: white; font-size: 12px; cursor: pointer; font-family: 'Outfit',sans-serif; transition: all 0.2s; }
+  .filter-btn.active { background: var(--green); color: white; border-color: var(--green); }
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:999; align-items:center; justify-content:center; }
+  .modal-overlay.show { display:flex; }
+  .modal-img { max-width:90vw; max-height:85vh; border-radius:12px; }
+  .modal-close { position:absolute; top:16px; right:16px; background:white; border:none; border-radius:50%; width:36px; height:36px; font-size:18px; cursor:pointer; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+  .stat-card { background: white; border-radius: 12px; padding: 16px; border: 1px solid var(--border); text-align: center; }
+  .stat-card .num { font-size: 26px; font-weight: 700; }
+  .stat-card .label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .stat-card .urdu-label { font-family: 'Noto Nastaliq Urdu', serif; direction: rtl; font-size: 11px; color: var(--muted); }
+
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--dark); color: white; padding: 12px 20px; border-radius: 10px; font-size: 13px; z-index: 9999; opacity: 0; transform: translateY(10px); transition: all 0.3s; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.success { background: var(--green); }
+  .toast.error { background: var(--red); }
+
+  @media (max-width: 700px) {
+    .admin-layout { grid-template-columns: 1fr; }
+    .sidebar { display: flex; overflow-x: auto; padding: 0; border-right: none; border-bottom: 1px solid var(--border); }
+    .sidebar-item { flex-direction: column; gap: 3px; padding: 10px 14px; font-size: 12px; border-left: none; border-bottom: 3px solid transparent; }
+    .sidebar-item.active { border-bottom-color: var(--green); border-left-color: transparent; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .two-col { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-text">
+    <div class="en">🔐 Admin Panel</div>
+    <div class="urdu">جمعہ میر جنرل اسٹور</div>
+  </div>
+  <div id="admin-header-btns" style="display:none; gap:8px;">
+    <span id="admin-email-show" style="font-size:12px; color:rgba(255,255,255,0.7);"></span>
+    <button class="btn btn-red btn-sm" onclick="adminLogout()">Logout</button>
+  </div>
+  <a href="index.html" style="text-decoration:none;">
+    <button class="btn" style="background:rgba(255,255,255,0.1); color:white; font-size:12px;">← Store</button>
+  </a>
+</header>
+
+<!-- ADMIN LOGIN -->
+<div id="admin-login">
+  <div class="login-icon">🔐</div>
+  <div class="login-title">Admin Login</div>
+  <div class="login-urdu">ایڈمن پینل میں داخل ہوں</div>
+  <div class="form-group">
+    <label>Admin Email / ای میل</label>
+    <input type="email" id="admin-email" placeholder="admin@store.com">
+  </div>
+  <div class="form-group">
+    <label>Password / پاسورڈ</label>
+    <input type="password" id="admin-pass" placeholder="••••••••">
+  </div>
+  <button class="btn btn-green btn-block" onclick="adminLogin()">Login / داخل ہوں</button>
+  <div style="text-align:center; margin-top:12px; font-size:11px; color:var(--muted);">
+    Only authorized admin can access this panel<br>
+    <span style="font-family:'Noto Nastaliq Urdu';direction:rtl;">صرف مجاز ایڈمن رسائی کر سکتا ہے</span>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel">
+  <div class="admin-layout">
+    <div class="sidebar">
+      <div class="sidebar-item active" onclick="showPage('orders')" id="nav-orders">
+        <span class="icon">📦</span>
+        <div>
+          <div>Orders</div>
+          <div class="urdu">آرڈر</div>
+        </div>
+      </div>
+      <div class="sidebar-stat">
+        <span class="stat-num" id="sb-pending">0</span> Pending orders
+      </div>
+      <div class="sidebar-item" onclick="showPage('items')" id="nav-items">
+        <span class="icon">🛍️</span>
+        <div>
+          <div>Manage Items</div>
+          <div class="urdu">اشیاء</div>
+        </div>
+      </div>
+      <div class="sidebar-stat">
+        <span class="stat-num" id="sb-items">0</span> Products
+      </div>
+      <div class="sidebar-item" onclick="showPage('overview')" id="nav-overview">
+        <span class="icon">📊</span>
+        <div>
+          <div>Overview</div>
+          <div class="urdu">جائزہ</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+
+      <!-- ORDERS PAGE -->
+      <div class="page active" id="page-orders">
+        <div class="page-title">Orders / آرڈر</div>
+        <div class="page-urdu">خریداروں کے آرڈر دیکھیں اور منظور کریں</div>
+        <div class="filter-bar">
+          <button class="filter-btn active" onclick="filterOrders('all', this)">All / سب</button>
+          <button class="filter-btn" onclick="filterOrders('pending', this)">⏳ Pending</button>
+          <button class="filter-btn" onclick="filterOrders('approved', this)">✅ Approved</button>
+          <button class="filter-btn" onclick="filterOrders('rejected', this)">❌ Rejected</button>
+        </div>
+        <div id="orders-list">
+          <div style="text-align:center; padding:40px; color:var(--muted);">Loading orders...</div>
+        </div>
+      </div>
+
+      <!-- ITEMS PAGE -->
+      <div class="page" id="page-items">
+        <div class="page-title">Manage Items / اشیاء</div>
+        <div class="page-urdu">نئی چیز شامل کریں یا اسٹاک اپڈیٹ کریں</div>
+        <div class="card">
+          <div class="card-title">Add New Item / نئی چیز شامل کریں</div>
+          <div class="two-col">
+            <div class="form-group">
+              <label>Item Name (English)</label>
+              <input type="text" id="item-name" placeholder="e.g. Sugar">
+            </div>
+            <div class="form-group">
+              <label>نام (اردو)</label>
+              <input type="text" id="item-name-urdu" placeholder="مثلاً چینی" style="direction:rtl; font-family:'Noto Nastaliq Urdu',serif;">
+            </div>
+            <div class="form-group">
+              <label>Price (Rs) / قیمت</label>
+              <input type="number" id="item-price" placeholder="0">
+            </div>
+            <div class="form-group">
+              <label>Stock Quantity / اسٹاک</label>
+              <input type="number" id="item-stock" placeholder="0">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Unit / اکائی (kg, liter, pcs, etc.)</label>
+            <input type="text" id="item-unit" placeholder="kg">
+          </div>
+          <button class="btn btn-green" onclick="addItem()">+ Add Item / شامل کریں</button>
+        </div>
+        <div class="card">
+          <div class="card-title">Items List / اشیاء کی فہرست</div>
+          <div id="admin-items-list">
+            <div style="text-align:center;padding:30px;color:var(--muted);">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OVERVIEW PAGE -->
+      <div class="page" id="page-overview">
+        <div class="page-title">Overview / جائزہ</div>
+        <div class="page-urdu">اسٹور کا خلاصہ</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="num" id="ov-total">0</div>
+            <div class="label">Total Orders</div>
+            <div class="urdu-label">کل آرڈر</div>
+          </div>
+          <div class="stat-card">
+            <div class="num" style="color:var(--gold);" id="ov-pending">0</div>
+            <div class="label">Pending</div>
+            <div class="urdu-label">زیر غور</div>
+          </div>
+          <div class="stat-card">
+            <div class="num" style="color:var(--green);" id="ov-approved">0</div>
+            <div class="label">Approved</div>
+            <div class="urdu-label">منظور</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Revenue (Approved Orders) / آمدنی</div>
+          <div style="font-size:28px; font-weight:700; color:var(--green);" id="ov-revenue">Rs 0</div>
+          <div style="font-size:13px; color:var(--muted); margin-top:4px;">Total from approved orders only</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- IMAGE MODAL -->
+<div class="modal-overlay" id="img-modal" onclick="closeModal()">
+  <button class="modal-close" onclick="closeModal()">✕</button>
+  <img src="" class="modal-img" id="modal-img" onclick="event.stopPropagation()">
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+
+const db = firebase.database();
+const auth = firebase.auth();
+let allOrders = {};
+let currentFilter = 'all';
+const ADMIN_EMAIL = window.ADMIN_EMAIL || 'admin@jummamir.com';
+
+auth.onAuthStateChanged(user => {
+  if (user && user.email === ADMIN_EMAIL) {
+    document.getElementById('admin-login').style.display = 'none';
+    document.getElementById('admin-panel').style.display = 'block';
+    document.getElementById('admin-header-btns').style.display = 'flex';
+    document.getElementById('admin-email-show').textContent = user.email;
+    loadOrders();
+    loadAdminItems();
+  } else if (user) {
+    auth.signOut();
+    showToast('Not authorized as admin', 'error');
+  }
+});
+
+async function adminLogin() {
+  const email = document.getElementById('admin-email').value.trim();
+  const pass = document.getElementById('admin-pass').value;
+  if (email !== ADMIN_EMAIL) return showToast('Not an admin account', 'error');
+  try {
+    await auth.signInWithEmailAndPassword(email, pass);
+  } catch(e) {
+    showToast(e.message, 'error');
+  }
+}
+
+function adminLogout() { auth.signOut(); location.reload(); }
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  if (name === 'overview') updateOverview();
+}
+
+// ORDERS
+function loadOrders() {
+  db.ref('orders').on('value', snap => {
+    allOrders = snap.val() || {};
+    renderOrders();
+    updateSidebarStats();
+    updateOverview();
+  });
+}
+
+function filterOrders(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderOrders();
+}
+
+function renderOrders() {
+  const list = document.getElementById('orders-list');
+  let keys = Object.keys(allOrders).reverse();
+  if (currentFilter !== 'all') keys = keys.filter(k => allOrders[k].status === currentFilter);
+  if (!keys.length) {
+    list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">No orders / کوئی آرڈر نہیں</div>';
+    return;
+  }
+  list.innerHTML = keys.map(id => renderOrderCard(id, allOrders[id])).join('');
+}
+
+function renderOrderCard(id, o) {
+  const d = new Date(o.timestamp).toLocaleString('en-PK');
+  const statusBadge = o.status === 'approved' ? '<span class="badge badge-approved">✅ Approved</span>' :
+                      o.status === 'rejected' ? '<span class="badge badge-rejected">❌ Rejected</span>' :
+                      '<span class="badge badge-pending">⏳ Pending</span>';
+  const items = Object.values(o.items).map(i => `${i.name} x${i.qty}`).join(', ');
+  const isImage = o.paymentUrl && !o.paymentFileName?.endsWith('.pdf');
+  const paymentHtml = isImage
+    ? `<img src="${o.paymentUrl}" class="payment-thumb" onclick="openModal('${o.paymentUrl}')" title="Click to enlarge">`
+    : `<a href="${o.paymentUrl}" target="_blank" class="payment-link">📄 View PDF Receipt</a>`;
+  const actionBtns = o.status === 'pending' ? `
+    <input type="text" class="admin-note-input" id="note-${id}" placeholder="Optional note to buyer...">
+    <div style="display:flex;gap:6px;margin-top:6px;">
+      <button class="btn btn-green btn-sm" onclick="approveOrder('${id}')">✅ Approve / منظور</button>
+      <button class="btn btn-red btn-sm" onclick="rejectOrder('${id}')">❌ Reject / مسترد</button>
+    </div>` : `${o.adminNote ? `<div style="font-size:12px;margin-top:6px;color:var(--muted);">Note: ${o.adminNote}</div>` : ''}`;
+  return `<div class="order-card" id="order-${id}">
+    <div class="order-header">
+      <div>
+        <div class="order-user">👤 ${o.userName}</div>
+        <div class="order-email">${o.userEmail}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">${d}</div>
+      </div>
+      ${statusBadge}
+    </div>
+    <div class="order-items-mini">🛒 ${items}</div>
+    <div style="font-size:13px;color:var(--muted);margin:4px 0;">💬 ${o.message || 'No message'}</div>
+    <div style="font-size:12px;font-weight:500;margin:4px 0;">Payment Proof:</div>
+    ${paymentHtml}
+    <div class="order-footer">
+      <span class="order-total-label">Rs ${o.total}</span>
+    </div>
+    ${actionBtns}
+  </div>`;
+}
+
+async function approveOrder(id) {
+  const note = document.getElementById('note-' + id)?.value || '';
+  const o = allOrders[id];
+  await db.ref('orders/' + id).update({ status: 'approved', adminNote: note });
+  // Deduct stock
+  for (const [itemId, item] of Object.entries(o.items)) {
+    const stockSnap = await db.ref('items/' + itemId + '/stock').get();
+    const cur = stockSnap.val() || 0;
+    await db.ref('items/' + itemId + '/stock').set(Math.max(0, cur - item.qty));
+  }
+  showToast('Order approved! Stock updated / منظور، اسٹاک کم کیا گیا', 'success');
+}
+
+async function rejectOrder(id) {
+  const note = document.getElementById('note-' + id)?.value || '';
+  await db.ref('orders/' + id).update({ status: 'rejected', adminNote: note });
+  showToast('Order rejected / آرڈر مسترد', 'error');
+}
+
+// ITEMS
+function loadAdminItems() {
+  db.ref('items').on('value', snap => {
+    const items = snap.val() || {};
+    document.getElementById('sb-items').textContent = Object.keys(items).length;
+    const list = document.getElementById('admin-items-list');
+    if (!Object.keys(items).length) {
+      list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);">No items yet</div>';
+      return;
+    }
+    list.innerHTML = Object.entries(items).map(([id, item]) => `
+      <div class="item-row">
+        <div class="item-row-info">
+          <div class="name">${item.name} ${item.unit ? `(${item.unit})` : ''}</div>
+          ${item.nameUrdu ? `<div class="name-urdu">${item.nameUrdu}</div>` : ''}
+          <div class="meta">Rs ${item.price} • Stock: <strong>${item.stock}</strong></div>
+        </div>
+        <div class="item-actions">
+          <span class="badge ${item.stock > 0 ? 'badge-green' : 'badge-red'}">${item.stock > 0 ? 'In Stock' : 'Out'}</span>
+          <input type="number" value="${item.stock}" min="0" style="width:64px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;font-size:12px;" id="stock-${id}">
+          <button class="btn btn-gold btn-sm" onclick="updateStock('${id}')">Update</button>
+          <button class="btn btn-red btn-sm" onclick="deleteItem('${id}')">✕</button>
+        </div>
+      </div>`).join('');
+  });
+}
+
+async function addItem() {
+  const name = document.getElementById('item-name').value.trim();
+  const nameUrdu = document.getElementById('item-name-urdu').value.trim();
+  const price = parseFloat(document.getElementById('item-price').value);
+  const stock = parseInt(document.getElementById('item-stock').value);
+  const unit = document.getElementById('item-unit').value.trim();
+  if (!name || isNaN(price) || isNaN(stock)) return showToast('Fill all required fields', 'error');
+  await db.ref('items').push({ name, nameUrdu, price, stock, unit, createdAt: Date.now() });
+  document.getElementById('item-name').value = '';
+  document.getElementById('item-name-urdu').value = '';
+  document.getElementById('item-price').value = '';
+  document.getElementById('item-stock').value = '';
+  document.getElementById('item-unit').value = '';
+  showToast('Item added! / آئٹم شامل ہوگیا', 'success');
+}
+
+async function updateStock(id) {
+  const val = parseInt(document.getElementById('stock-' + id).value);
+  if (isNaN(val)) return;
+  await db.ref('items/' + id + '/stock').set(val);
+  showToast('Stock updated / اسٹاک اپڈیٹ', 'success');
+}
+
+async function deleteItem(id) {
+  if (!confirm('Delete this item?')) return;
+  await db.ref('items/' + id).remove();
+  showToast('Deleted / حذف', 'error');
+}
+
+function updateSidebarStats() {
+  const pending = Object.values(allOrders).filter(o => o.status === 'pending').length;
+  document.getElementById('sb-pending').textContent = pending;
+}
+
+function updateOverview() {
+  const vals = Object.values(allOrders);
+  document.getElementById('ov-total').textContent = vals.length;
+  document.getElementById('ov-pending').textContent = vals.filter(o => o.status === 'pending').length;
+  const approved = vals.filter(o => o.status === 'approved');
+  document.getElementById('ov-approved').textContent = approved.length;
+  document.getElementById('ov-revenue').textContent = 'Rs ' + approved.reduce((s, o) => s + (o.total || 0), 0);
+}
+
+function openModal(url) {
+  document.getElementById('modal-img').src = url;
+  document.getElementById('img-modal').classList.add('show');
+}
+function closeModal() { document.getElementById('img-modal').classList.remove('show'); }
+
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 3500);
+}
+</script>
+</body>
+</html>
